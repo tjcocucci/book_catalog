@@ -8,5 +8,10 @@ class BookAdmin(admin.ModelAdmin):
     search_fields = ("title", "author", "isbn")
 
 
+class GenreAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ("name",)
+
+
 admin.site.register(Book, BookAdmin)
-admin.site.register(Genre)
+admin.site.register(Genre, GenreAdmin)
