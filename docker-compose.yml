@@ -1,0 +1,40 @@
+services:
+  catalog-db:
+    image: mysql:latest
+    container_name: catalog-db
+    environment:
+      MYSQL_ROOT_PASSWORD: RootPass123!
+    ports:
+      - "3306:3306"
+    volumes:
+      - catalog-db-volume:/var/lib/mysql
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    networks:
+      - catalog-network
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 2s
+      retries: 20
+
+  catalog-api:
+    image: catalog-api-image
+    container_name: catalog-api-container
+    command: sh -c "python3 manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      catalog-db:
+        condition: service_healthy
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - catalog-network
+    env_file:
+      - .env
+
+volumes:
+  catalog-db-volume:
+
+networks:
+  catalog-network:
