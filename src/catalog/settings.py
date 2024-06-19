@@ -26,6 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
+AUTH_SERVER_URL = os.environ.get("AUTH_SERVER_URL")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get("DEBUG", default=0))
@@ -86,7 +87,7 @@ DATABASES = {
         "USER": os.environ.get("MYSQL_USER"),
         "PASSWORD": os.environ.get("MYSQL_PASSWORD"),
         "HOST": os.environ.get("HOST"),
-        "PORT": os.environ.get("MYSQL_PORT"),
+        "PORT": os.environ.get("MYSQL_PORT_CONTAINER"),
     }
 }
 
