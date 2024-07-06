@@ -1,0 +1,107 @@
+[
+  {
+    "model": "books.inventoryitem",
+    "pk": 1,
+    "fields": { "stock": 10, "price": "10.99" }
+  },
+  {
+    "model": "books.book",
+    "pk": 1,
+    "fields": {
+      "isbn": "9783161484100",
+      "title": "The Great Gatsby",
+      "author": "F. Scott Fitzgerald",
+      "genres": [1, 2]
+    }
+  },
+  {
+    "model": "books.inventoryitem",
+    "pk": 2,
+    "fields": { "stock": 2, "price": "4.99" }
+  },
+  {
+    "model": "books.book",
+    "pk": 2,
+    "fields": {
+      "isbn": "9783161484100",
+      "title": "The Great Catsby",
+      "author": "F. Scott Fitzgerald",
+      "genres": [1, 2]
+    }
+  },
+  {
+    "model": "books.inventoryitem",
+    "pk": 3,
+    "fields": { "stock": 5, "price": "9.99" }
+  },
+  {
+    "model": "books.book",
+    "pk": 3,
+    "fields": {
+      "isbn": "9783161484101",
+      "title": "To Kill a Mockingbird",
+      "author": "Harper Lee",
+      "genres": [1, 2]
+    }
+  },
+  {
+    "model": "books.inventoryitem",
+    "pk": 4,
+    "fields": { "stock": 3, "price": "8.99" }
+  },
+  {
+    "model": "books.book",
+    "pk": 4,
+    "fields": {
+      "isbn": "9783161484102",
+      "title": "1984",
+      "author": "George Orwell",
+      "genres": [1, 2]
+    }
+  },
+  {
+    "model": "books.inventoryitem",
+    "pk": 5,
+    "fields": { "stock": 7, "price": "7.99" }
+  },
+  {
+    "model": "books.book",
+    "pk": 5,
+    "fields": {
+      "isbn": "9783161484103",
+      "title": "The Catcher in the Rye",
+      "author": "J.D. Salinger",
+      "genres": [1, 2]
+    }
+  },
+  {
+    "model": "books.inventoryitem",
+    "pk": 6,
+    "fields": { "stock": 2, "price": "6.99" }
+  },
+  {
+    "model": "books.book",
+    "pk": 6,
+    "fields": {
+      "isbn": "9783161484104",
+      "title": "The Hobbit",
+      "author": "J.R.R. Tolkien",
+      "genres": [3, 2]
+    }
+  },
+  {
+    "model": "books.inventoryitem",
+    "pk": 7,
+    "fields": { "stock": 1, "price": "5.99" }
+  },
+  {
+    "model": "books.book",
+    "pk": 7,
+    "fields": {
+      "isbn": "9783161481222",
+      "title": "The Lord of the Rings",
+      "author": "J.R.R. Tolkien",
+      "genres": [3, 2]
+    }
+  }
+]
