@@ -1,6 +1,6 @@
 # Videoclub-bookstore
 
-En este proyecto desarrollé dos servicios para una librería y videoclub de mi barrio en Córdoba. Solo consideré la parte del negocio que se dedica a la venta de libros. El primer servicio, `auth` es un sistema básico de autenticación de usuarios. El segundo servicio, `catalog`, es un catálogo de libros. La comunicación entre los servicios está planteada de manera que al consultar el catálogo de libros, el servicio `catalog` verifica que el usuario esté autenticado con el servicio `auth`. Ambos servicios están desplegados en droplets de DigitalOcean.
+En este proyecto desarrollé dos servicios para una librería y videoclub de mi barrio en Córdoba. Solo consideré la parte del negocio que se dedica a la venta de libros. El primer servicio, `auth` es un sistema básico de autenticación de usuarios. El segundo servicio, `catalog`, es un catálogo de libros. La comunicación entre los servicios está planteada de manera que al consultar el catálogo de libros, el servicio `catalog` verifica que el usuario esté autenticado con el servicio `auth`. Ambos servicios están desplegados en droplets de DigitalOcean. Además, desarrollé un frontend en Next.js para consumir los servicios y lo desplegué en Vercel.
 
 ## Direcciones y repositorios
 
@@ -10,7 +10,11 @@ En este proyecto desarrollé dos servicios para una librería y videoclub de mi 
 - Servicio `catalog`:
   - Dirección: [http://159.65.225.166:1337/books/](http://159.65.225.166:1337/books/)
   - Repositorio: [https://github.com/tjcocucci/book_catalog](https://github.com/tjcocucci/book_catalog)
-  
+
+- Frontend:
+  - Dirección: [https://videoclub-ecru.vercel.app/](https://videoclub-ecru.vercel.app/)
+  - Repositorio: [https://github.com/tjcocucci/videoclub-frontend](https://github.com/tjcocucci/videoclub-frontend)
+
 ## Servicio `auth`
 
 El servicio `auth` es una API REST implementada en Python con FastAPI. La base de datos es MySQL y se utiliza peewee como ORM. Cuenta con un solo modelo `User` y contamos con endpoints para:
@@ -42,6 +46,15 @@ Para facilitar la configuración y lanzamiento del servicio, se incluye un archi
 ## Comunicación entre servicios
 
 Para que el servicio `catalog` pueda verificar que un usuario está autenticado con el servicio `auth`, creamos la clase `AuthServerPermission` extendiendo `BasePermission` en el archivo `permissions.py`. En el método `has_permission` de la clase `AuthServerPermission` hacemos un request `GET` al endpoint `/session` del servicio `auth` con el token de autenticación que viene en el header `Authorization` del request al servicio `catalog`. En todas las vistas utilizamos el campo `permission_classes` para asignar la clase `AuthServerPermission` a las vistas que queremos proteger. De esta manera, si un usuario no está autenticado con el servicio `auth`, obtendrá un error `403` al intentar acceder a las vistas protegidas.
+
+## Frontend
+
+A modo de ejercicio extra, desarrollé un frontend en `Next.js` para consumir los servicios `auth` y `catalog` y lo desplegué en Vercel (shoutout al bootcamp de frontend avanzado que realicé el año pasado en Código Facilito). El frontend es muy básico y por lo pronto solo es para dar un ejemplo de como se pueden consumir los servicios. Cuenta con las siguientes rutas:
+
+- `/`: Página de inicio con un mensaje de bienvenida
+- `/login`: Formulario para loguear un usuario
+- `/signup`: Formulario para crear un usuario
+- `/book-catalog`: Lista de libros del catálogo. A nivel de backend no se puede consumir el servicio de `catalog` sin estar autenticado pero como medida de seguridad adicional, en el frontend se verifica a través del middleware que el usuario esté autenticado para proteger esta ruta
 
 ## Testear con curl
 
