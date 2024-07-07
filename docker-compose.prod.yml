@@ -1,0 +1,59 @@
+services:
+  catalog-db:
+    image: mysql:latest
+    container_name: catalog-db
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "${MYSQL_PORT_HOST}:${MYSQL_PORT_CONTAINER}"
+    volumes:
+      - catalog-db-volume:/var/lib/mysql
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    networks:
+      - catalog-network
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 2s
+      retries: 20
+
+  catalog-api:
+    image: catalog-api-image
+    container_name: catalog-api-container
+    env_file:
+      - .env
+    command: sh -c "python3 manage.py migrate --noinput && python manage.py collectstatic --noinput --clear && gunicorn catalog.wsgi:application --bind ${API_ADDRESS_HOST}:${API_PORT_HOST}"
+    depends_on:
+      catalog-db:
+        condition: service_healthy
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "${API_PORT_HOST}:${API_PORT_CONTAINER}"
+    expose:
+      - "${API_PORT_CONTAINER}"
+    volumes:
+      - static-files-volume:/catalog-service/staticfiles
+    networks:
+      - catalog-network
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 1337:80
+    depends_on:
+      - catalog-api
+    volumes:
+      - static-files-volume:/catalog-service/staticfiles
+    networks:
+      - catalog-network
+
+volumes:
+  catalog-db-volume:
+  static-files-volume:
+
+
+networks:
+  catalog-network:

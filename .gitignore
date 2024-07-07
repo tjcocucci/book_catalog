@@ -1,6 +1,7 @@
 .credentials
 .env
 .env.dev
+.env.prod
 .venv
 
 __pycache__/
