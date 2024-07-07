@@ -17,6 +17,7 @@ services:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 2s
       retries: 20
+    restart: always
 
   catalog-api:
     image: catalog-api-image
@@ -38,6 +39,7 @@ services:
       - static-files-volume:/catalog-service/staticfiles
     networks:
       - catalog-network
+    restart: always
 
   nginx:
     build: ./nginx
@@ -49,6 +51,7 @@ services:
       - static-files-volume:/catalog-service/staticfiles
     networks:
       - catalog-network
+    restart: always
 
 volumes:
   catalog-db-volume:
