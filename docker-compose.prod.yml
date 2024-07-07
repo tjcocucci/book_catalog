@@ -23,7 +23,7 @@ services:
     container_name: catalog-api-container
     env_file:
       - .env
-    command: sh -c "python3 manage.py migrate --noinput && python manage.py collectstatic --noinput --clear && gunicorn catalog.wsgi:application --bind ${API_ADDRESS_HOST}:${API_PORT_HOST}"
+    command: sh -c "python3 manage.py migrate --noinput && python manage.py collectstatic --noinput --clear && python manage.py loaddata genres_fixture books_fixture && gunicorn catalog.wsgi:application --bind ${API_ADDRESS_HOST}:${API_PORT_HOST}"
     depends_on:
       catalog-db:
         condition: service_healthy
