@@ -2,10 +2,14 @@
 
 En este proyecto desarrollé dos servicios para una librería y videoclub de mi barrio en Córdoba. Solo consideré la parte del negocio que se dedica a la venta de libros. El primer servicio, `auth` es un sistema básico de autenticación de usuarios. El segundo servicio, `catalog`, es un catálogo de libros. La comunicación entre los servicios está planteada de manera que al consultar el catálogo de libros, el servicio `catalog` verifica que el usuario esté autenticado con el servicio `auth`. Ambos servicios están desplegados en droplets de DigitalOcean.
 
-## Direcciones de los servicios
+## Direcciones y repositorios
 
-- Servicio `auth`: [http://206.81.1.87:4000/docs](http://206.81.1.87:4000/docs)
-- Servicio `catalog`: [http://159.65.225.166:1337/books/](http://159.65.225.166:1337/books/)
+- Servicio `auth`:
+  - Dirección: [http://206.81.1.87:4000/docs](http://206.81.1.87:4000/docs)
+  - Repositorio: [https://github.com/tjcocucci/catalog_auth](https://github.com/tjcocucci/catalog_auth)
+- Servicio `catalog`:
+  - Dirección: [http://159.65.225.166:1337/books/](http://159.65.225.166:1337/books/)
+  - Repositorio: [https://github.com/tjcocucci/book_catalog](https://github.com/tjcocucci/book_catalog)
   
 ## Servicio `auth`
 
