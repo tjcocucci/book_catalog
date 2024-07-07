@@ -5,9 +5,8 @@ En este proyecto desarrollé dos servicios para una librería y videoclub de mi 
 ## Direcciones de los servicios
 
 - Servicio `auth`: [http://206.81.1.87:4000/docs](http://206.81.1.87:4000/docs)
-- Servicio `catalog`: [http://159.65.225.166:8000/books/](http://159.65.225.166:8000/books/)
+- Servicio `catalog`: [http://159.65.225.166:1337/books/](http://159.65.225.166:1337/books/)
   
-
 ## Servicio `auth`
 
 El servicio `auth` es una API REST implementada en Python con FastAPI. La base de datos es MySQL y se utiliza peewee como ORM. Cuenta con un solo modelo `User` y contamos con endpoints para:
@@ -34,21 +33,63 @@ El servicio `catalog` es una API REST implementada en Python con django y django
 - Crear (`POST /books`), listar (`GET /books`), obtener por id (`GET /books/{book_id}`), actualizar por id (`PATCH /books/{book_id}`) y eliminar por id (`DELETE /books/{book_id}`) un libro
 - Crear (`POST /inventory`), listar (`GET /inventory`), obtener por id (`GET /inventory/{inventory_id}`), actualizar por id (`PATCH /inventory/{inventory_id}`) y eliminar por id (`DELETE /inventory/{inventory_id}`) un item de inventario
 
-Para facilitar la configuración y lanzamiento del servicio, se incluye un archivo `docker-compose.yml` que levanta dos servicios, uno para la aplicación django y otro para la base de datos MySQL.
+Para facilitar la configuración y lanzamiento del servicio, se incluye un archivo `docker-compose.yml` que levanta tres servicios, uno para la aplicación django, otro para la base de datos MySQL y un tercero para el servidor web nginx que sirve los archivos estáticos.
 
 ## Comunicación entre servicios
 
 Para que el servicio `catalog` pueda verificar que un usuario está autenticado con el servicio `auth`, creamos la clase `AuthServerPermission` extendiendo `BasePermission` en el archivo `permissions.py`. En el método `has_permission` de la clase `AuthServerPermission` hacemos un request `GET` al endpoint `/session` del servicio `auth` con el token de autenticación que viene en el header `Authorization` del request al servicio `catalog`. En todas las vistas utilizamos el campo `permission_classes` para asignar la clase `AuthServerPermission` a las vistas que queremos proteger. De esta manera, si un usuario no está autenticado con el servicio `auth`, obtendrá un error `403` al intentar acceder a las vistas protegidas.
 
-## Frontend
+## Testear con curl
 
-Como ejercicio extra y para facilitar la interacción con los servicios, desarrollé un frontend muy básico en `Next.js` que consume los servicios `auth` y `catalog` (shoutout al bootcamp de CódigoFacilito que hice el año pasado). Cuenta con las siguientes rutas:
+Para testear que los servicios funcionan correctamente, podemos utilizar `curl` para hacer requests a los endpoints. A continuación se muestran algunos ejemplos de requests que podemos hacer:
 
-- `/`: Página de inicio vacía
-- `/signup`: Formulario para crear un usuario (realiza un request `POST` al endpoint `/users` del servicio `auth`)
-- `/login`: Formulario para loguear un usuario (realiza un request `POST` al endpoint `/login` del servicio `auth`)
-- `/book-catalog`: Lista de libros (realiza un request `GET` al endpoint `/books` del servicio `catalog`): esta ruta está protegida y solo se puede acceder si el usuario está autenticado.
+Crear un usuario en el servicio `auth`, reemplazar `$USERNAME` por el nombre de usuario que queremos crear y también la contraseña si queremos cambiarla:
 
-Este frontend utiliza una sesión en cookies para almacenar el token de autenticación y también cuenta con validación de input con `zod`.
+```bash
+curl -X 'POST' \
+  'http://206.81.1.87:4000/users' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "username": $USERNAME,
+  "password": "Pass123!"
+}'
+```
 
-Al diferencia de los servicios de backend, el frontend no está dockerizado. Se puede ejecutar con `yarn dev`. Está desplegado en Vercel.
+Listar todos los usuarios en el servicio `auth`:
+
+```bash
+curl -X 'GET' \
+  'http://206.81.1.87:4000/users' \
+  -H 'accept: application/json'
+```
+
+Intentar obtener los libros del servicio `catalog` sin estar autenticado:
+
+```bash
+curl -X 'GET' \
+  'http://159.65.225.166:1337/books/' \
+    -H 'accept: application/json'
+```
+
+Loguear un usuario en el servicio `auth` y obtener un token de autenticación, reemplazar `$USERNAME` por el nombre de usuario que queremos loguear y también la contraseña si queremos cambiarla:
+
+```bash
+curl -X 'POST' \
+  'http://206.81.1.87:4000/login' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "username": "$USERNAME",
+  "password": "Pass123!"
+}'
+```
+
+Ahora utilizar el token de autenticación para obtener los libros del servicio `catalog`, reemplazar `$TOKEN` por el token que obtuvimos en el paso anterior, deberíamos obtener una lista de libros en formato JSON:
+
+```bash
+curl -X 'GET' \
+  'http://159.65.225.166:1337/books/' \
+    -H 'accept: application/json' \
+    -H 'Authorization: Bearer $TOKEN'
+```
