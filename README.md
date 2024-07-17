@@ -56,6 +56,23 @@ A modo de ejercicio extra, desarrollé un frontend en `Next.js` para consumir lo
 - `/signup`: Formulario para crear un usuario
 - `/book-catalog`: Lista de libros del catálogo. A nivel de backend no se puede consumir el servicio de `catalog` sin estar autenticado pero como medida de seguridad adicional, en el frontend se verifica a través del middleware que el usuario esté autenticado para proteger esta ruta
 
+## Mejoras posibles
+
+Hay muchas cosas a mejorar, claro, acá listo algunas ideas, pero antes quiero aclarar que he notado algunos problemas con el contenedor de `mysql` del servicio `auth`. Al principio noté que la conección de `peewee` se caía por algún timeput. Para evitar esto escribí una pequeña función de middleware que inicia una conección en cada hit a la API y la desconecta al terminar de procesarla. Aún así noté que el healthcheck de `docker compose` fallaba al intentar conectarme luego de algunos días. Para intentar resolver este asunto creé un `cronjob` que reinicia los contenedores `unhealthy` mediante la regla:
+
+```bash
+* * * * * docker ps -q -f health=unhealthy | xargs docker restart
+```
+
+En caso de que alguno de los servicios esté caído me pueden contactar a mi correo `tadeojcocucci@gmail.com`.
+
+### Otras mejoras posibles
+
+- Agregar tests unitarios y de integración
+- Incorporar CI/CD
+- Automatizar aún más el despliegue
+- Automatizar backups de la base de datos
+
 ## Testear con curl
 
 Para testear que los servicios funcionan correctamente, podemos utilizar `curl` para hacer requests a los endpoints. A continuación se muestran algunos ejemplos de requests que podemos hacer:
